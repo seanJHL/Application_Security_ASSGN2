@@ -1,0 +1,920 @@
+/* ========================================
+   Auth Pages - Modern Apple-Inspired Design
+   with Aurora Effect
+   ======================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background-color: #fafafa;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ========================================
+   Main Container - Split Layout
+   ======================================== */
+
+.auth-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Reversed layout - Aurora on right, Form on left */
+.auth-container.reversed {
+    flex-direction: row-reverse;
+}
+
+.auth-container.reversed .aurora-content {
+    text-align: right;
+    padding: 60px 50px;
+    margin-left: auto;
+}
+
+/* Mirror spheres for reversed layout */
+.auth-container.reversed .aurora-bg::before {
+    right: auto;
+    left: -150px;
+}
+
+.auth-container.reversed .aurora-bg::after {
+    right: auto;
+    left: 5%;
+}
+
+.auth-container.reversed .sphere-container::before {
+    right: auto;
+    left: -100px;
+}
+
+.auth-container.reversed .sphere-container::after {
+    left: auto;
+    right: 10%;
+}
+
+.auth-container.reversed .glow-edge-1,
+.auth-container.reversed .glow-edge-2 {
+    right: auto;
+    left: -90px;
+}
+
+.auth-container.reversed .intersection-glow {
+    right: auto;
+    left: 15%;
+}
+
+/* ========================================
+   macOS-Style Abstract Spheres (Left)
+   ======================================== */
+
+.auth-aurora {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 45%;
+    height: 100vh;
+    background: #000000;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+/* Reversed layout - Aurora fixed to right */
+.auth-container.reversed .auth-aurora {
+    left: auto;
+    right: 0;
+    justify-content: flex-end;
+}
+
+.aurora-content {
+    position: relative;
+    z-index: 10;
+    text-align: left;
+    padding: 60px 50px;
+    max-width: 500px;
+}
+
+.aurora-title {
+    font-size: 2.75rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.aurora-subtitle {
+    font-size: 1.0625rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.5;
+}
+
+/* macOS Abstract Spheres Background */
+.aurora-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    background: #000000;
+}
+
+/* Hide the old gradient - not needed */
+.aurora-gradient {
+    display: none;
+}
+
+/* Hide old orbs */
+.aurora-orb {
+    display: none;
+}
+
+/* ========================================
+   macOS Glass Spheres
+   ======================================== */
+
+/* Sphere 1 - Top right, grey/silver large sphere */
+.aurora-bg::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    top: -200px;
+    right: -150px;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle at 30% 30%, 
+            rgba(180, 180, 190, 0.15) 0%, 
+            rgba(100, 100, 110, 0.1) 30%, 
+            rgba(60, 60, 70, 0.05) 50%,
+            transparent 70%
+        );
+    box-shadow: 
+        inset -30px -30px 60px rgba(255, 255, 255, 0.03),
+        inset 20px 20px 40px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(150, 150, 160, 0.1);
+}
+
+/* Sphere 2 - Middle overlapping sphere with subtle edge */
+.aurora-bg::after {
+    content: '';
+    position: absolute;
+    width: 450px;
+    height: 450px;
+    top: 15%;
+    right: 5%;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle at 35% 35%, 
+            rgba(120, 120, 130, 0.08) 0%, 
+            rgba(80, 80, 90, 0.05) 40%,
+            transparent 70%
+        );
+    box-shadow: 
+        inset -20px -20px 40px rgba(255, 255, 255, 0.02),
+        inset 15px 15px 30px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(140, 140, 150, 0.08);
+}
+
+/* Additional spheres container */
+.sphere-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+/* Sphere 3 - Bottom blue glowing sphere */
+.sphere-container::before {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    bottom: -150px;
+    right: -100px;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle at 40% 40%, 
+            rgba(30, 50, 80, 0.2) 0%, 
+            rgba(20, 40, 70, 0.15) 30%,
+            rgba(10, 30, 60, 0.1) 50%,
+            transparent 70%
+        );
+    box-shadow: 
+        inset -25px -25px 50px rgba(100, 150, 255, 0.05),
+        inset 20px 20px 40px rgba(0, 0, 0, 0.5),
+        0 0 80px rgba(80, 120, 255, 0.15),
+        0 0 120px rgba(60, 100, 255, 0.1);
+    border: 1.5px solid rgba(100, 140, 255, 0.2);
+}
+
+/* Sphere 4 - Small accent sphere with blue glow */
+.sphere-container::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    bottom: 10%;
+    left: 10%;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle at 35% 35%, 
+            rgba(40, 60, 100, 0.15) 0%, 
+            rgba(25, 45, 85, 0.1) 40%,
+            transparent 70%
+        );
+    box-shadow: 
+        inset -15px -15px 30px rgba(80, 130, 255, 0.08),
+        inset 10px 10px 25px rgba(0, 0, 0, 0.4),
+        0 0 60px rgba(70, 120, 255, 0.12),
+        0 0 100px rgba(50, 100, 255, 0.08);
+    border: 1px solid rgba(90, 130, 255, 0.25);
+}
+
+/* Glowing edge effect for blue spheres */
+.glow-edge {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.glow-edge-1 {
+    width: 480px;
+    height: 480px;
+    bottom: -140px;
+    right: -90px;
+    border: 2px solid transparent;
+    background: 
+        linear-gradient(135deg, transparent 40%, rgba(80, 140, 255, 0.3) 50%, transparent 60%) border-box;
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) padding-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    filter: blur(1px);
+}
+
+.glow-edge-2 {
+    width: 520px;
+    height: 520px;
+    bottom: -160px;
+    right: -110px;
+    box-shadow: 
+        0 0 40px rgba(70, 130, 255, 0.2),
+        0 0 80px rgba(60, 120, 255, 0.1);
+    border: 1px solid rgba(100, 150, 255, 0.1);
+}
+
+/* Intersection highlight - where spheres meet */
+.intersection-glow {
+    position: absolute;
+    width: 200px;
+    height: 80px;
+    bottom: 25%;
+    right: 15%;
+    background: radial-gradient(ellipse, rgba(100, 150, 255, 0.15) 0%, transparent 70%);
+    filter: blur(20px);
+    transform: rotate(-30deg);
+}
+
+/* Subtle ambient light */
+.ambient-light {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(ellipse at 80% 20%, rgba(100, 100, 120, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 80%, rgba(60, 80, 140, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* ========================================
+   Form Side (Right by default)
+   ======================================== */
+
+.auth-form-container {
+    width: 55%;
+    min-height: 100vh;
+    background: #ffffff;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 60px 40px;
+    margin-left: 45%; /* Offset for fixed aurora */
+    overflow-y: auto;
+}
+
+/* Reversed layout - Form on left */
+.auth-container.reversed .auth-form-container {
+    margin-left: 0;
+    margin-right: 45%;
+}
+
+.auth-form-wrapper {
+    width: 100%;
+    max-width: 480px;
+    padding-top: 20px;
+    padding-bottom: 40px;
+}
+
+/* ========================================
+   Form Header
+   ======================================== */
+
+.auth-header {
+    margin-bottom: 40px;
+}
+
+.auth-header h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+}
+
+.auth-header p {
+    font-size: 1rem;
+    color: #6e6e73;
+    margin: 0;
+}
+
+/* ========================================
+   Form Styles
+   ======================================== */
+
+.auth-form {
+    width: 100%;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 0;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1d1d1f;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #1d1d1f;
+    background-color: #f5f5f7;
+    border: 1.5px solid transparent;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.form-control:hover {
+    background-color: #ebebed;
+}
+
+.form-control:focus {
+    background-color: #ffffff;
+    border-color: #1d1d1f;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
+}
+
+.form-control::placeholder {
+    color: #86868b;
+}
+
+.form-control.is-invalid {
+    border-color: #ff3b30;
+    background-color: #fff5f5;
+}
+
+.form-control.is-invalid:focus {
+    box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.1);
+}
+
+/* Select Styling */
+.form-select {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #1d1d1f;
+    background-color: #f5f5f7;
+    border: 1.5px solid transparent;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 20px;
+}
+
+.form-select:hover {
+    background-color: #ebebed;
+}
+
+.form-select:focus {
+    background-color: #ffffff;
+    border-color: #1d1d1f;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
+}
+
+/* File Input */
+.file-input-wrapper {
+    position: relative;
+}
+
+.file-input-wrapper input[type="file"] {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #1d1d1f;
+    background-color: #f5f5f7;
+    border: 1.5px dashed #d2d2d7;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.file-input-wrapper input[type="file"]:hover {
+    background-color: #ebebed;
+    border-color: #1d1d1f;
+}
+
+/* Textarea */
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Validation Messages */
+.text-danger,
+.field-validation-error {
+    display: block;
+    font-size: 0.8125rem;
+    color: #ff3b30;
+    margin-top: 6px;
+}
+
+.validation-summary-errors {
+    background-color: #fff5f5;
+    border: 1px solid #ffcdd2;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+}
+
+.validation-summary-errors ul {
+    margin: 0;
+    padding-left: 20px;
+    color: #ff3b30;
+    font-size: 0.875rem;
+}
+
+/* ========================================
+   Password Strength Indicator
+   ======================================== */
+
+#passwordStrength {
+    margin-top: 12px;
+    padding: 16px;
+    background: #f5f5f7;
+    border-radius: 12px;
+}
+
+#passwordStrength .progress {
+    height: 6px;
+    border-radius: 3px;
+    background-color: #e5e5e7;
+    overflow: hidden;
+}
+
+#strengthBar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+#strengthText {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    margin-top: 8px;
+    display: block;
+}
+
+#passwordRequirements {
+    margin-top: 12px;
+    padding: 0;
+    list-style: none;
+}
+
+#passwordRequirements li {
+    font-size: 0.8125rem;
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #86868b;
+    transition: color 0.2s ease;
+}
+
+#passwordRequirements li.text-success {
+    color: #34c759;
+}
+
+#passwordRequirements li.text-danger {
+    color: #ff3b30;
+}
+
+/* ========================================
+   Submit Button
+   ======================================== */
+
+.btn-auth-primary {
+    width: 100%;
+    padding: 16px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #ffffff;
+    background: #000000;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+}
+
+.btn-auth-primary:hover {
+    transform: translateY(-2px);
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.btn-auth-primary:active {
+    transform: translateY(0);
+}
+
+.btn-auth-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Secondary Button */
+.btn-auth-secondary {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: inherit;
+    color: #1d1d1f;
+    background: #f5f5f7;
+    border: 1.5px solid #d2d2d7;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-auth-secondary:hover {
+    background: #ebebed;
+    border-color: #c7c7cc;
+}
+
+/* ========================================
+   Divider
+   ======================================== */
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    margin: 28px 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #d2d2d7;
+}
+
+.auth-divider span {
+    padding: 0 16px;
+    font-size: 0.875rem;
+    color: #86868b;
+}
+
+/* ========================================
+   Footer Links
+   ======================================== */
+
+.auth-footer {
+    text-align: center;
+    margin-top: 32px;
+}
+
+.auth-footer p {
+    font-size: 0.9375rem;
+    color: #6e6e73;
+}
+
+.auth-footer a {
+    color: #1d1d1f;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.auth-footer a:hover {
+    color: #000000;
+    text-decoration: underline;
+}
+
+/* ========================================
+   Alerts
+   ======================================== */
+
+.alert-modern {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 0.9375rem;
+    margin-bottom: 24px;
+    border: none;
+}
+
+.alert-modern.alert-success {
+    background: #e8f8ed;
+    color: #1b7f37;
+}
+
+.alert-modern.alert-danger {
+    background: #fff5f5;
+    color: #d93025;
+}
+
+.alert-modern.alert-warning {
+    background: #fff8e6;
+    color: #b45309;
+}
+
+.alert-modern.alert-info {
+    background: #e7f3ff;
+    color: #0066cc;
+}
+
+/* ========================================
+   2FA Code Input
+   ======================================== */
+
+.code-input {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 0.5em;
+    padding: 20px;
+    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+}
+
+/* ========================================
+   Form Helper Text
+   ======================================== */
+
+.form-text {
+    font-size: 0.8125rem;
+    color: #86868b;
+    margin-top: 6px;
+}
+
+/* ========================================
+   Password Toggle
+   ======================================== */
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #86868b;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-toggle:hover {
+    color: #1d1d1f;
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+
+@media (max-width: 1024px) {
+    .auth-aurora {
+        width: 40%;
+    }
+    
+    .aurora-content {
+        padding: 50px 40px;
+    }
+    
+    .auth-form-container {
+        width: 60%;
+        margin-left: 40%;
+    }
+    
+    .auth-container.reversed .auth-form-container {
+        margin-left: 0;
+        margin-right: 40%;
+    }
+    
+    .aurora-title {
+        font-size: 2rem;
+    }
+    
+    .aurora-bg::before {
+        width: 400px;
+        height: 400px;
+        top: -100px;
+        right: -100px;
+    }
+    
+    .aurora-bg::after {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .sphere-container::before {
+        width: 350px;
+        height: 350px;
+        bottom: -100px;
+        right: -50px;
+    }
+    
+    .sphere-container::after {
+        width: 200px;
+        height: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        flex-direction: column;
+    }
+    
+    .auth-container.reversed {
+        flex-direction: column;
+    }
+    
+    .auth-aurora {
+        position: relative;
+        width: 100%;
+        height: 220px;
+        min-height: 220px;
+    }
+    
+    .auth-container.reversed .auth-aurora {
+        left: 0;
+        right: auto;
+    }
+    
+    .aurora-content {
+        padding: 40px 30px;
+        text-align: left !important;
+        margin-left: 0 !important;
+    }
+    
+    .aurora-title {
+        font-size: 1.75rem;
+    }
+    
+    .aurora-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .auth-form-container {
+        width: 100%;
+        min-height: auto;
+        padding: 40px 20px;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    .auth-container.reversed .auth-form-container {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    /* Adjust spheres for mobile */
+    .aurora-bg::before {
+        width: 300px;
+        height: 300px;
+        top: -80px;
+        right: -80px;
+    }
+    
+    .aurora-bg::after {
+        width: 200px;
+        height: 200px;
+        top: 10%;
+        right: 0;
+    }
+    
+    .sphere-container::before {
+        width: 250px;
+        height: 250px;
+        bottom: -80px;
+        right: -30px;
+    }
+    
+    .sphere-container::after {
+        width: 150px;
+        height: 150px;
+        bottom: 5%;
+        left: 5%;
+    }
+    
+    .glow-edge-1,
+    .glow-edge-2 {
+        width: 240px;
+        height: 240px;
+        bottom: -75px;
+        right: -25px;
+    }
+    
+    .intersection-glow {
+        width: 100px;
+        height: 40px;
+        bottom: 15%;
+        right: 10%;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-form-container {
+        padding: 24px 16px;
+    }
+    
+    .auth-header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .form-control,
+    .form-select {
+        padding: 12px 14px;
+    }
+    
+    .btn-auth-primary {
+        padding: 14px 20px;
+    }
+}

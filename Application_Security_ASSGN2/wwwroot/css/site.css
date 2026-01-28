@@ -8,10 +8,6 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
 html {
   position: relative;
   min-height: 100%;
@@ -19,4 +15,103 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: #f8f9fa;
+}
+
+/* Focus states */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* Card styling */
+.card {
+  border: none;
+  border-radius: 10px;
+}
+
+.card-header {
+  border-radius: 10px 10px 0 0 !important;
+}
+
+/* Form styling */
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Button styling */
+.btn {
+  border-radius: 5px;
+}
+
+/* Password strength meter */
+#passwordStrength {
+  transition: all 0.3s ease;
+}
+
+#strengthBar {
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+#passwordRequirements li {
+  padding: 2px 0;
+  transition: color 0.2s ease;
+}
+
+/* Navbar styling */
+.navbar-brand {
+  font-weight: bold;
+}
+
+.nav-link.btn-link {
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+/* Footer styling */
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+}
+
+/* Error pages */
+.error-template h1 {
+  font-weight: bold;
+}
+
+/* Alert styling */
+.alert {
+  border-radius: 8px;
+}
+
+/* Badge styling */
+.badge {
+  font-size: 0.9em;
+  padding: 0.5em 0.8em;
+}
+
+/* Input group styling */
+.input-group-text {
+  background-color: #e9ecef;
+}
+
+/* 2FA code input */
+input[name="Code"] {
+  font-family: monospace;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .card-body {
+    padding: 1rem;
+  }
+  
+  .btn-lg {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
 }

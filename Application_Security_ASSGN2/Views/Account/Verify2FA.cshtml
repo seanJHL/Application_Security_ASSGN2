@@ -1,0 +1,52 @@
+@model Verify2FAViewModel
+@{
+    ViewData["Title"] = "Verify Identity";
+    ViewData["AuroraTitle"] = "Two-Factor Authentication";
+    ViewData["AuroraSubtitle"] = "Enter the verification code sent to your email to complete the login process.";
+    ViewData["LayoutReversed"] = false;
+    Layout = "_AuthLayout";
+}
+
+<div class="auth-header">
+    <h1>Verify your identity</h1>
+    <p>We've sent a 6-digit code to <strong>@Model.Email</strong></p>
+</div>
+
+<form asp-action="Verify2FA" method="post" class="auth-form">
+    @Html.AntiForgeryToken()
+    
+    <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+    <div class="form-group">
+        <label asp-for="Code">Verification Code</label>
+        <input asp-for="Code" type="text" class="form-control code-input" 
+               maxlength="6" pattern="[0-9]{6}" placeholder="000000" autofocus 
+               autocomplete="one-time-code" inputmode="numeric" />
+        <span asp-validation-for="Code" class="text-danger"></span>
+        <small class="form-text" style="text-align: center; display: block; margin-top: 12px;">Code expires in 5 minutes</small>
+    </div>
+
+    <button type="submit" class="btn-auth-primary">Verify</button>
+
+    <div class="auth-footer">
+        <p>Didn't receive the code? <a href="#" onclick="alert('Please check your spam folder or try logging in again.')">Resend code</a></p>
+        <p style="margin-top: 8px;"><a asp-action="Login">Back to Login</a></p>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        // Auto-focus and format the code input
+        const codeInput = document.querySelector('input[name="Code"]');
+        codeInput.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '').substring(0, 6);
+        });
+        
+        // Auto-submit when 6 digits entered
+        codeInput.addEventListener('keyup', function() {
+            if (this.value.length === 6) {
+                this.form.submit();
+            }
+        });
+    </script>
+}

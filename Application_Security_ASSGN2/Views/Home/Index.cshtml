@@ -1,0 +1,109 @@
+@model Member
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="bi bi-person-circle"></i> Welcome, @Model.FirstName @Model.LastName!</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5 class="card-title">Your Profile Information</h5>
+                        <hr />
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted fw-bold">First Name</label>
+                                    <p class="form-control-plaintext">@Model.FirstName</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted fw-bold">Last Name</label>
+                                    <p class="form-control-plaintext">@Model.LastName</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted fw-bold">Email</label>
+                                    <p class="form-control-plaintext">@Model.Email</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted fw-bold">Gender</label>
+                                    <p class="form-control-plaintext">@Model.Gender</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted fw-bold">NRIC</label>
+                                    <p class="form-control-plaintext">
+                                        <span class="badge bg-secondary">@ViewBag.DecryptedNRIC</span>
+                                        <small class="text-muted">(Decrypted)</small>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted fw-bold">Date of Birth</label>
+                                    <p class="form-control-plaintext">@Model.DateOfBirth.ToString("MMMM dd, yyyy")</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.WhoAmI))
+                        {
+                            <div class="mb-3">
+                                <label class="form-label text-muted fw-bold">About Me</label>
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        @Html.Raw(Model.WhoAmI)
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.ResumePath))
+                        {
+                            <div class="mb-3">
+                                <label class="form-label text-muted fw-bold">Resume</label>
+                                <p>
+                                    <a href="@Model.ResumePath" class="btn btn-outline-primary btn-sm" target="_blank">
+                                        <i class="bi bi-file-earmark-text"></i> View Resume
+                                    </a>
+                                </p>
+                            </div>
+                        }
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title"><i class="bi bi-shield-check"></i> Account Security</h6>
+                                <hr />
+                                <p class="small text-muted mb-1">Last Password Change:</p>
+                                <p class="mb-3">@Model.PasswordChangedAt.ToString("MMM dd, yyyy HH:mm")</p>
+                                
+                                <a asp-controller="Account" asp-action="ChangePassword" class="btn btn-warning btn-sm w-100">
+                                    <i class="bi bi-key"></i> Change Password
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
