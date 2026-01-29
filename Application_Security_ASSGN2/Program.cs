@@ -12,19 +12,18 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Configure Session
+// Configure Session with security best practices
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(
         builder.Configuration.GetValue<int>("SessionSettings:TimeoutInMinutes", 30));
-    options.Cookie.HttpOnly = true;
+    options.Cookie.HttpOnly = true;        // Prevent JavaScript access to session cookie
     options.Cookie.IsEssential = true;
-    // Allow HTTP in development, require HTTPS in production
     options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() 
         ? CookieSecurePolicy.SameAsRequest 
-        : CookieSecurePolicy.Always;
-    options.Cookie.SameSite = SameSiteMode.Strict;
+        : CookieSecurePolicy.Always;       // Require HTTPS in production
+    options.Cookie.SameSite = SameSiteMode.Strict;  // Prevent CSRF attacks
     options.Cookie.Name = ".AppSecurity.Session";
 });
 
@@ -37,12 +36,12 @@ builder.Services.AddScoped<IEncryptionService, EncryptionService>();
 builder.Services.AddScoped<IReCaptchaService, ReCaptchaService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
+builder.Services.AddScoped<IInputSanitizationService, InputSanitizationService>();
 
-// Configure anti-forgery
+// Configure anti-forgery with security best practices
 builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = "X-CSRF-TOKEN";
-    // Allow HTTP in development, require HTTPS in production
     options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() 
         ? CookieSecurePolicy.SameAsRequest 
         : CookieSecurePolicy.Always;
@@ -50,33 +49,74 @@ builder.Services.AddAntiforgery(options =>
     options.Cookie.SameSite = SameSiteMode.Strict;
 });
 
+// Configure cookie policy
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.CheckConsentNeeded = context => false;
+    options.MinimumSameSitePolicy = SameSiteMode.Strict;
+    options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always;
+    options.Secure = builder.Environment.IsDevelopment() 
+        ? CookieSecurePolicy.SameAsRequest 
+        : CookieSecurePolicy.Always;
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ============================================
+// SECURITY MIDDLEWARE PIPELINE
+// Order matters! Configure in the correct sequence
+// ============================================
+
+// 1. Global Exception Handler - Catches all unhandled exceptions
+// Prevents stack traces and internal details from being exposed
+app.UseGlobalExceptionHandler();
+
+// 2. Security Headers - Adds XSS, CSP, and other security headers
+// Protects against XSS, clickjacking, MIME sniffing attacks
+app.UseSecurityHeaders();
+
+// 3. HTTPS Redirection and HSTS
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error/500");
     app.UseHsts();
 }
-else
-{
-    app.UseDeveloperExceptionPage();
-}
+app.UseHttpsRedirection();
 
-// Handle HTTP errors with custom error pages
+// 4. Handle HTTP status codes with custom error pages
+// Prevents default server error pages that may expose server info
 app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
+// 5. Static files with security options
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        // Add security headers for static files
+        ctx.Context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+        
+        // Cache static files for 1 year (they have version hashes)
+        if (ctx.Context.Request.Path.StartsWithSegments("/lib") ||
+            ctx.Context.Request.Path.StartsWithSegments("/css") ||
+            ctx.Context.Request.Path.StartsWithSegments("/js"))
+        {
+            ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=31536000");
+        }
+    }
+});
 
+// 6. Cookie policy
+app.UseCookiePolicy();
+
+// 7. Routing
 app.UseRouting();
 
-// Session must be before authentication/authorization
+// 8. Session - Must be before authentication/authorization
 app.UseSession();
 
-// Custom session validation middleware
+// 9. Custom session validation middleware
 app.UseSessionValidation();
 
+// 10. Authorization
 app.UseAuthorization();
 
 // Configure default route for MVC
@@ -105,11 +145,21 @@ using (var scope = app.Services.CreateScope())
 // Display application URLs when server starts
 app.Lifetime.ApplicationStarted.Register(() =>
 {
-    var logger = app.Services.GetRequiredService<ILogger<Program>>();
-    
     Console.WriteLine();
     Console.WriteLine("╔════════════════════════════════════════════════════════════╗");
     Console.WriteLine("║          Application Security - Server Running             ║");
+    Console.WriteLine("╠════════════════════════════════════════════════════════════╣");
+    Console.WriteLine("║  Security Features Enabled:                                ║");
+    Console.WriteLine("║  ✓ XSS Protection (Content-Security-Policy)                ║");
+    Console.WriteLine("║  ✓ Clickjacking Protection (X-Frame-Options)               ║");
+    Console.WriteLine("║  ✓ MIME Sniffing Protection (X-Content-Type-Options)       ║");
+    Console.WriteLine("║  ✓ CSRF Protection (Anti-Forgery Tokens)                   ║");
+    Console.WriteLine("║  ✓ Session Security (HttpOnly, SameSite, Secure)           ║");
+    Console.WriteLine("║  ✓ Global Exception Handling (No Stack Trace Exposure)     ║");
+    Console.WriteLine("║  ✓ Custom Error Pages (401, 403, 404, 500)                 ║");
+    Console.WriteLine("║  ✓ Password Hashing (Argon2id)                             ║");
+    Console.WriteLine("║  ✓ Data Encryption (AES-256 for NRIC)                      ║");
+    Console.WriteLine("║  ✓ Two-Factor Authentication (Email OTP)                   ║");
     Console.WriteLine("╚════════════════════════════════════════════════════════════╝");
     Console.WriteLine();
     Console.WriteLine("🌐 Application is now running at:");
@@ -124,7 +174,6 @@ app.Lifetime.ApplicationStarted.Register(() =>
     }
     else
     {
-        // Fallback to common defaults
         Console.WriteLine("   → http://localhost:5157");
         Console.WriteLine("   → https://localhost:7164");
     }

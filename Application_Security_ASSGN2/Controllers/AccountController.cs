@@ -16,6 +16,7 @@ namespace Application_Security_ASSGN2.Controllers
         private readonly IReCaptchaService _reCaptchaService;
         private readonly IEmailService _emailService;
         private readonly IAuditLogService _auditLogService;
+        private readonly IInputSanitizationService _inputSanitizationService;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AccountController> _logger;
         private readonly IWebHostEnvironment _environment;
@@ -27,6 +28,7 @@ namespace Application_Security_ASSGN2.Controllers
             IReCaptchaService reCaptchaService,
             IEmailService emailService,
             IAuditLogService auditLogService,
+            IInputSanitizationService inputSanitizationService,
             IConfiguration configuration,
             ILogger<AccountController> logger,
             IWebHostEnvironment environment)
@@ -37,6 +39,7 @@ namespace Application_Security_ASSGN2.Controllers
             _reCaptchaService = reCaptchaService;
             _emailService = emailService;
             _auditLogService = auditLogService;
+            _inputSanitizationService = inputSanitizationService;
             _configuration = configuration;
             _logger = logger;
             _environment = environment;
@@ -52,6 +55,11 @@ namespace Application_Security_ASSGN2.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            // Redirect logged-in users to home page
+            if (HttpContext.Session.GetInt32("UserId").HasValue)
+            {
+                return Redirect("/");
+            }
             return View();
         }
 
@@ -59,6 +67,12 @@ namespace Application_Security_ASSGN2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
+            // Redirect logged-in users to home page
+            if (HttpContext.Session.GetInt32("UserId").HasValue)
+            {
+                return Redirect("/");
+            }
+
             // Verify reCAPTCHA
             if (!string.IsNullOrEmpty(model.RecaptchaToken))
             {
@@ -146,6 +160,11 @@ namespace Application_Security_ASSGN2.Controllers
         [HttpGet]
         public IActionResult Login(string? returnUrl = null)
         {
+            // Redirect logged-in users to home page
+            if (HttpContext.Session.GetInt32("UserId").HasValue)
+            {
+                return Redirect("/");
+            }
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
@@ -154,6 +173,12 @@ namespace Application_Security_ASSGN2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
+            // Redirect logged-in users to home page
+            if (HttpContext.Session.GetInt32("UserId").HasValue)
+            {
+                return Redirect("/");
+            }
+
             ViewData["ReturnUrl"] = returnUrl;
 
             // Verify reCAPTCHA
@@ -165,6 +190,27 @@ namespace Application_Security_ASSGN2.Controllers
                     ModelState.AddModelError("", "reCAPTCHA verification failed. Please try again.");
                     return View(model);
                 }
+            }
+
+            // Input validation - Check for SQL injection patterns
+            // This prevents attackers from using special characters to expose database errors
+            if (_inputSanitizationService.ContainsSqlInjectionPatterns(model.Email) ||
+                _inputSanitizationService.ContainsSqlInjectionPatterns(model.Password))
+            {
+                _logger.LogWarning("Potential SQL injection attempt detected from IP: {IP}, Email: {Email}", 
+                    GetClientIpAddress(), _inputSanitizationService.SanitizeInput(model.Email));
+                await _auditLogService.LogAsync(null, AuditAction.LoginFailed, GetClientIpAddress(), 
+                    "Potential SQL injection attempt detected");
+                ModelState.AddModelError("", "Invalid email or password.");
+                return View(model);
+            }
+
+            // Check for XSS patterns
+            if (_inputSanitizationService.ContainsXssPatterns(model.Email))
+            {
+                _logger.LogWarning("Potential XSS attempt detected from IP: {IP}", GetClientIpAddress());
+                ModelState.AddModelError("", "Invalid email or password.");
+                return View(model);
             }
 
             if (!ModelState.IsValid)
@@ -458,6 +504,11 @@ namespace Application_Security_ASSGN2.Controllers
         [HttpGet]
         public IActionResult ForgotPassword()
         {
+            // Redirect logged-in users to home page (they should use Change Password)
+            if (HttpContext.Session.GetInt32("UserId").HasValue)
+            {
+                return Redirect("/");
+            }
             return View();
         }
 
@@ -465,6 +516,12 @@ namespace Application_Security_ASSGN2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
+            // Redirect logged-in users to home page
+            if (HttpContext.Session.GetInt32("UserId").HasValue)
+            {
+                return Redirect("/");
+            }
+
             // Verify reCAPTCHA
             if (!string.IsNullOrEmpty(model.RecaptchaToken))
             {
