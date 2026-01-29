@@ -330,7 +330,8 @@ namespace Application_Security_ASSGN2.Controllers
             await _auditLogService.Log2FAAsync(member.Id, GetClientIpAddress(), true);
             await _auditLogService.LogLoginAsync(member.Id, GetClientIpAddress()!, true);
 
-            return RedirectToAction("Index", "Home");
+            // Redirect to home page
+            return Redirect("/");
         }
 
         #endregion
@@ -444,7 +445,7 @@ namespace Application_Security_ASSGN2.Controllers
             // If user was logged in, redirect to home; otherwise, to login
             if (HttpContext.Session.GetInt32("UserId").HasValue)
             {
-                return RedirectToAction("Index", "Home");
+                return Redirect("/");
             }
 
             return RedirectToAction("Login");

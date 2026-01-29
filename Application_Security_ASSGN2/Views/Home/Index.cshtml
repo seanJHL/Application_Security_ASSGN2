@@ -1,109 +1,297 @@
-@model Member
+@model Application_Security_ASSGN2.Models.ViewModels.DashboardViewModel
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Dashboard";
+    Layout = "_Layout";
 }
 
-<div class="row">
-    <div class="col-12">
-        <div class="card shadow">
-            <div class="card-header bg-success text-white">
-                <h4 class="mb-0"><i class="bi bi-person-circle"></i> Welcome, @Model.FirstName @Model.LastName!</h4>
+<div class="settings-container">
+    <!-- Sidebar Navigation -->
+    <aside class="settings-sidebar">
+        <h2 class="sidebar-title">Account Settings</h2>
+        <nav class="sidebar-nav">
+            <a href="#personal-info" class="sidebar-link active">
+                <i class="bi bi-person"></i>
+                Personal Info
+            </a>
+            <a href="#password-security" class="sidebar-link">
+                <i class="bi bi-key"></i>
+                Password & Security
+            </a>
+            <a href="#account-recovery" class="sidebar-link">
+                <i class="bi bi-shield-check"></i>
+                Account Recovery
+            </a>
+            <a href="#policies" class="sidebar-link">
+                <i class="bi bi-gear"></i>
+                Security Policies
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="settings-content">
+        <!-- Personal Information Section -->
+        <section id="personal-info" class="settings-section">
+            <div class="section-header">
+                <h1 class="section-title">Personal Information</h1>
+                <p class="section-subtitle">Update your personal details below</p>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-8">
-                        <h5 class="card-title">Your Profile Information</h5>
-                        <hr />
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label text-muted fw-bold">First Name</label>
-                                    <p class="form-control-plaintext">@Model.FirstName</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label text-muted fw-bold">Last Name</label>
-                                    <p class="form-control-plaintext">@Model.LastName</p>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label text-muted fw-bold">Email</label>
-                                    <p class="form-control-plaintext">@Model.Email</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label text-muted fw-bold">Gender</label>
-                                    <p class="form-control-plaintext">@Model.Gender</p>
-                                </div>
-                            </div>
-                        </div>
+            <form asp-controller="Home" asp-action="UpdateProfile" method="post" enctype="multipart/form-data" id="profileForm">
+                @Html.AntiForgeryToken()
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label text-muted fw-bold">NRIC</label>
-                                    <p class="form-control-plaintext">
-                                        <span class="badge bg-secondary">@ViewBag.DecryptedNRIC</span>
-                                        <small class="text-muted">(Decrypted)</small>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label text-muted fw-bold">Date of Birth</label>
-                                    <p class="form-control-plaintext">@Model.DateOfBirth.ToString("MMMM dd, yyyy")</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        @if (!string.IsNullOrEmpty(Model.WhoAmI))
-                        {
-                            <div class="mb-3">
-                                <label class="form-label text-muted fw-bold">About Me</label>
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        @Html.Raw(Model.WhoAmI)
-                                    </div>
-                                </div>
-                            </div>
+                <div class="profile-avatar-section">
+                    <div class="profile-avatar-large">
+                        @{
+                            var firstInitial = !string.IsNullOrEmpty(Model.Member.FirstName) ? Model.Member.FirstName[0].ToString() : "";
+                            var lastInitial = !string.IsNullOrEmpty(Model.Member.LastName) ? Model.Member.LastName[0].ToString() : "";
+                            var initials = $"{firstInitial}{lastInitial}".ToUpper();
                         }
-
-                        @if (!string.IsNullOrEmpty(Model.ResumePath))
-                        {
-                            <div class="mb-3">
-                                <label class="form-label text-muted fw-bold">Resume</label>
-                                <p>
-                                    <a href="@Model.ResumePath" class="btn btn-outline-primary btn-sm" target="_blank">
-                                        <i class="bi bi-file-earmark-text"></i> View Resume
-                                    </a>
-                                </p>
-                            </div>
-                        }
+                        @initials
                     </div>
-                    
-                    <div class="col-md-4">
-                        <div class="card bg-light">
-                            <div class="card-body">
-                                <h6 class="card-title"><i class="bi bi-shield-check"></i> Account Security</h6>
-                                <hr />
-                                <p class="small text-muted mb-1">Last Password Change:</p>
-                                <p class="mb-3">@Model.PasswordChangedAt.ToString("MMM dd, yyyy HH:mm")</p>
-                                
-                                <a asp-controller="Account" asp-action="ChangePassword" class="btn btn-warning btn-sm w-100">
-                                    <i class="bi bi-key"></i> Change Password
-                                </a>
-                            </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label asp-for="ProfileForm.FirstName" class="field-label">First Name</label>
+                        <input asp-for="ProfileForm.FirstName" class="field-input" placeholder="Enter your first name" />
+                        <span asp-validation-for="ProfileForm.FirstName" class="field-error"></span>
+                    </div>
+                    <div class="form-field">
+                        <label asp-for="ProfileForm.LastName" class="field-label">Last Name</label>
+                        <input asp-for="ProfileForm.LastName" class="field-input" placeholder="Enter your last name" />
+                        <span asp-validation-for="ProfileForm.LastName" class="field-error"></span>
+                    </div>
+                    <div class="form-field">
+                        <label asp-for="ProfileForm.Email" class="field-label">Email Address</label>
+                        <input asp-for="ProfileForm.Email" type="email" class="field-input" placeholder="Enter your email" />
+                        <span asp-validation-for="ProfileForm.Email" class="field-error"></span>
+                    </div>
+                    <div class="form-field">
+                        <label asp-for="ProfileForm.Gender" class="field-label">Gender</label>
+                        <select asp-for="ProfileForm.Gender" class="field-input field-select">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                            <option value="Prefer not to say">Prefer not to say</option>
+                        </select>
+                        <span asp-validation-for="ProfileForm.Gender" class="field-error"></span>
+                    </div>
+                    <div class="form-field">
+                        <label asp-for="ProfileForm.NRIC" class="field-label">NRIC</label>
+                        <div class="input-with-icon">
+                            <i class="bi bi-lock-fill input-icon"></i>
+                            <input asp-for="ProfileForm.NRIC" class="field-input field-input-icon" placeholder="S1234567A" />
                         </div>
+                        <span class="field-hint">Your NRIC is encrypted and stored securely</span>
+                        <span asp-validation-for="ProfileForm.NRIC" class="field-error"></span>
+                    </div>
+                    <div class="form-field">
+                        <label asp-for="ProfileForm.DateOfBirth" class="field-label">Date of Birth</label>
+                        <input asp-for="ProfileForm.DateOfBirth" type="date" class="field-input" />
+                        <span asp-validation-for="ProfileForm.DateOfBirth" class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="form-field full-width">
+                    <label asp-for="ProfileForm.WhoAmI" class="field-label">Who Am I</label>
+                    <textarea asp-for="ProfileForm.WhoAmI" class="field-input field-textarea" rows="4" placeholder="Tell us about yourself... (special characters allowed)"></textarea>
+                    <span class="field-hint">Maximum 500 characters. All special characters are allowed.</span>
+                    <span asp-validation-for="ProfileForm.WhoAmI" class="field-error"></span>
+                </div>
+
+                <div class="form-field full-width">
+                    <label asp-for="ProfileForm.Resume" class="field-label">Resume</label>
+                    @if (!string.IsNullOrEmpty(Model.ProfileForm.CurrentResumePath))
+                    {
+                        <div class="current-file">
+                            <a href="@Model.ProfileForm.CurrentResumePath" target="_blank" class="current-file-link">
+                                <i class="bi bi-file-earmark-text"></i>
+                                View Current Resume
+                            </a>
+                        </div>
+                    }
+                    <input asp-for="ProfileForm.Resume" type="file" class="field-input field-file" accept=".pdf,.docx" />
+                    <span class="field-hint">Accepted formats: .pdf, .docx</span>
+                    <span asp-validation-for="ProfileForm.Resume" class="field-error"></span>
+                </div>
+
+                <div class="section-actions">
+                    <button type="submit" class="btn-action btn-primary">
+                        <i class="bi bi-check-lg"></i>
+                        Save Changes
+                    </button>
+                    <button type="reset" class="btn-action btn-secondary">
+                        <i class="bi bi-x-lg"></i>
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Password & Security Section -->
+        <section id="password-security" class="settings-section">
+            <div class="section-header">
+                <h1 class="section-title">Password & Security</h1>
+            </div>
+
+            @if (Model.DaysUntilPasswordExpiry <= 7 && Model.DaysUntilPasswordExpiry > 0)
+            {
+                <div class="status-alert warning">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <div>
+                        <strong>Password Expiring Soon</strong>
+                        <p>Your password will expire in @Model.DaysUntilPasswordExpiry day(s).</p>
+                    </div>
+                </div>
+            }
+            else if (Model.DaysUntilPasswordExpiry <= 0)
+            {
+                <div class="status-alert danger">
+                    <i class="bi bi-exclamation-octagon-fill"></i>
+                    <div>
+                        <strong>Password Expired</strong>
+                        <p>Please change your password immediately.</p>
+                    </div>
+                </div>
+            }
+
+            <div class="info-list">
+                <div class="info-item">
+                    <div class="info-label">Last Password Change</div>
+                    <div class="info-value">@Model.PasswordChangedAt.ToString("MMMM dd, yyyy")</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Password Expires In</div>
+                    <div class="info-value">
+                        <span class="badge @(Model.DaysUntilPasswordExpiry <= 7 ? (Model.DaysUntilPasswordExpiry <= 0 ? "badge-danger" : "badge-warning") : "badge-success")">
+                            @(Model.DaysUntilPasswordExpiry > 0 ? $"{Model.DaysUntilPasswordExpiry} days" : "Expired")
+                        </span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Can Change Password</div>
+                    <div class="info-value">
+                        @if (Model.CanChangePassword)
+                        {
+                            <span class="badge badge-success">Yes</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-warning">Wait @Model.MinutesUntilCanChangePassword min</span>
+                        }
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+
+            <div class="section-actions">
+                @if (Model.CanChangePassword)
+                {
+                    <a asp-controller="Account" asp-action="ChangePassword" class="btn-action btn-primary">
+                        <i class="bi bi-key"></i>
+                        Change Password
+                    </a>
+                }
+                else
+                {
+                    <button class="btn-action btn-disabled" disabled>
+                        <i class="bi bi-clock"></i>
+                        Wait @Model.MinutesUntilCanChangePassword minute(s)
+                    </button>
+                }
+            </div>
+        </section>
+
+        <!-- Account Recovery Section -->
+        <section id="account-recovery" class="settings-section">
+            <div class="section-header">
+                <h1 class="section-title">Account Recovery</h1>
+            </div>
+
+            @if (Model.IsLocked)
+            {
+                <div class="status-alert danger">
+                    <i class="bi bi-lock-fill"></i>
+                    <div>
+                        <strong>Account Locked</strong>
+                        <p>Unlocks automatically in @Model.MinutesUntilUnlock minute(s).</p>
+                    </div>
+                </div>
+            }
+
+            <div class="info-list">
+                <div class="info-item">
+                    <div class="info-label">Account Status</div>
+                    <div class="info-value">
+                        @if (Model.IsLocked)
+                        {
+                            <span class="badge badge-danger">Locked</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-success">Active</span>
+                        }
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Auto Recovery After Lockout</div>
+                    <div class="info-value">@Model.LockoutDurationInMinutes minutes</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Failed Attempts Before Lockout</div>
+                    <div class="info-value">@Model.MaxFailedAttempts attempts</div>
+                </div>
+            </div>
+
+            <div class="section-actions">
+                <a asp-controller="Account" asp-action="ForgotPassword" class="btn-action btn-secondary">
+                    <i class="bi bi-envelope"></i>
+                    Reset via Email
+                </a>
+            </div>
+        </section>
+
+        <!-- Security Policies Section -->
+        <section id="policies" class="settings-section">
+            <div class="section-header">
+                <h1 class="section-title">Security Policies</h1>
+            </div>
+
+            <div class="info-list">
+                <div class="info-item">
+                    <div class="info-label">Password History</div>
+                    <div class="info-value">Cannot reuse last @Model.PasswordHistoryCount passwords</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Minimum Password Age</div>
+                    <div class="info-value">@Model.MinimumPasswordAgeInMinutes minute(s)</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Maximum Password Age</div>
+                    <div class="info-value">@Model.MaximumPasswordAgeInDays days</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Session Timeout</div>
+                    <div class="info-value">@Model.SessionTimeoutInMinutes minutes</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Two-Factor Authentication</div>
+                    <div class="info-value">
+                        <span class="badge badge-success">
+                            <i class="bi bi-check-lg"></i> Enabled
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

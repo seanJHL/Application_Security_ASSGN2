@@ -17,10 +17,14 @@ namespace Application_Security_ASSGN2.Middleware
             "/Account/ResetPassword",
             "/Account/Verify2FA",
             "/Error",
+            "/Home/Privacy",
             "/css",
             "/js",
             "/lib",
-            "/uploads"
+            "/uploads",
+            "/favicon.ico",
+            "/_framework",
+            "/_blazor"
         };
 
         public SessionValidationMiddleware(RequestDelegate next, ILogger<SessionValidationMiddleware> logger)

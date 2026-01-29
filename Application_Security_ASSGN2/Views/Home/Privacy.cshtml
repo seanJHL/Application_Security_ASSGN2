@@ -2,43 +2,58 @@
     ViewData["Title"] = "Privacy Policy";
 }
 
-<div class="row">
-    <div class="col-12">
-        <div class="card shadow">
-            <div class="card-header bg-dark text-white">
-                <h4 class="mb-0"><i class="bi bi-shield-lock"></i> Privacy Policy</h4>
-            </div>
-            <div class="card-body">
-                <h5>Data Collection and Usage</h5>
-                <p>We collect and process your personal information to provide our services. This includes:</p>
-                <ul>
-                    <li>Personal identification information (Name, NRIC, Email, Date of Birth)</li>
-                    <li>Account credentials (securely hashed passwords)</li>
-                    <li>Session information for security purposes</li>
-                    <li>Audit logs of account activities</li>
-                </ul>
+<div class="privacy-container">
+    <div class="privacy-card">
+        <h1 class="privacy-title">Privacy Policy</h1>
 
-                <h5>Data Protection</h5>
-                <p>We implement various security measures to protect your data:</p>
-                <ul>
-                    <li><strong>Password Hashing:</strong> All passwords are securely hashed using Argon2id algorithm</li>
-                    <li><strong>Encryption:</strong> Sensitive data like NRIC is encrypted using AES-256</li>
-                    <li><strong>Session Security:</strong> Secure session management with token validation</li>
-                    <li><strong>Two-Factor Authentication:</strong> Additional layer of security for account access</li>
-                </ul>
+        <div class="privacy-section">
+            <h5 class="privacy-heading">
+                <i class="bi bi-collection"></i>
+                Data Collection and Usage
+            </h5>
+            <p>We collect and process your personal information to provide our services. This includes:</p>
+            <ul class="privacy-list">
+                <li><i class="bi bi-check-circle-fill"></i> Personal identification information (Name, NRIC, Email, Date of Birth)</li>
+                <li><i class="bi bi-check-circle-fill"></i> Account credentials (securely hashed passwords)</li>
+                <li><i class="bi bi-check-circle-fill"></i> Session information for security purposes</li>
+                <li><i class="bi bi-check-circle-fill"></i> Audit logs of account activities</li>
+            </ul>
+        </div>
 
-                <h5>Your Rights</h5>
-                <p>You have the right to:</p>
-                <ul>
-                    <li>Access your personal data</li>
-                    <li>Request correction of inaccurate data</li>
-                    <li>Request deletion of your account</li>
-                    <li>Change your password at any time</li>
-                </ul>
+        <div class="privacy-section">
+            <h5 class="privacy-heading">
+                <i class="bi bi-shield-check"></i>
+                Data Protection
+            </h5>
+            <p>We implement various security measures to protect your data:</p>
+            <ul class="privacy-list">
+                <li><i class="bi bi-check-circle-fill"></i> <strong>Password Hashing:</strong> All passwords are securely hashed using Argon2id algorithm</li>
+                <li><i class="bi bi-check-circle-fill"></i> <strong>Encryption:</strong> Sensitive data like NRIC is encrypted using AES-256</li>
+                <li><i class="bi bi-check-circle-fill"></i> <strong>Session Security:</strong> Secure session management with token validation</li>
+                <li><i class="bi bi-check-circle-fill"></i> <strong>Two-Factor Authentication:</strong> Additional layer of security for account access</li>
+            </ul>
+        </div>
 
-                <h5>Contact</h5>
-                <p>For any privacy-related inquiries, please contact us through the appropriate channels.</p>
-            </div>
+        <div class="privacy-section">
+            <h5 class="privacy-heading">
+                <i class="bi bi-person-check"></i>
+                Your Rights
+            </h5>
+            <p>You have the right to:</p>
+            <ul class="privacy-list">
+                <li><i class="bi bi-arrow-right-circle-fill"></i> Access your personal data</li>
+                <li><i class="bi bi-arrow-right-circle-fill"></i> Request correction of inaccurate data</li>
+                <li><i class="bi bi-arrow-right-circle-fill"></i> Request deletion of your account</li>
+                <li><i class="bi bi-arrow-right-circle-fill"></i> Change your password at any time</li>
+            </ul>
+        </div>
+
+        <div class="privacy-section">
+            <h5 class="privacy-heading">
+                <i class="bi bi-envelope"></i>
+                Contact
+            </h5>
+            <p>For any privacy-related inquiries, please contact us through the appropriate channels.</p>
         </div>
     </div>
 </div>

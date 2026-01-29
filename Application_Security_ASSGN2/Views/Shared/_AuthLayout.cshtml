@@ -8,9 +8,55 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
+    <!-- Top Navigation Bar -->
+    <header class="auth-top-bar">
+        <div class="auth-top-bar-container">
+            <!-- Logo/Brand -->
+            <a class="auth-brand" href="/">
+                <span class="auth-brand-text">SecureApp</span>
+            </a>
+
+            <!-- Auth Navigation -->
+            <nav class="auth-nav">
+                @{
+                    var currentAction = ViewContext.RouteData.Values["action"]?.ToString()?.ToLower();
+                    var isLoginPage = currentAction == "login" || currentAction == "verify2fa";
+                    var isRegisterPage = currentAction == "register";
+                }
+                
+                @if (isLoginPage)
+                {
+                    <span class="auth-nav-text">Don't have an account?</span>
+                    <a asp-controller="Account" asp-action="Register" class="auth-nav-btn">
+                        <i class="bi bi-person-plus"></i>
+                        Sign up
+                    </a>
+                }
+                else if (isRegisterPage)
+                {
+                    <span class="auth-nav-text">Already have an account?</span>
+                    <a asp-controller="Account" asp-action="Login" class="auth-nav-btn auth-nav-btn-outline">
+                        Sign in
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="auth-nav-btn auth-nav-btn-outline">
+                        Sign in
+                    </a>
+                    <a asp-controller="Account" asp-action="Register" class="auth-nav-btn">
+                        <i class="bi bi-person-plus"></i>
+                        Sign up
+                    </a>
+                }
+            </nav>
+        </div>
+    </header>
+
     <div class="auth-container @(ViewData["LayoutReversed"] != null && (bool)ViewData["LayoutReversed"] ? "reversed" : "")">
         <!-- Left side - macOS Abstract Spheres -->
         <div class="auth-aurora">
