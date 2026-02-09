@@ -249,10 +249,13 @@
             </div>
 
             <div class="section-actions">
-                <a asp-controller="Account" asp-action="ForgotPassword" class="btn-action btn-secondary">
-                    <i class="bi bi-envelope"></i>
-                    Reset via Email
-                </a>
+                <form asp-controller="Home" asp-action="SendPasswordResetLink" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn-action btn-secondary">
+                        <i class="bi bi-envelope"></i>
+                        Reset Password
+                    </button>
+                </form>
             </div>
         </section>
 

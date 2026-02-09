@@ -14,19 +14,25 @@ namespace Application_Security_ASSGN2.Controllers
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;
         private readonly IAuditLogService _auditLogService;
+        private readonly IEmailService _emailService;
+        private readonly ILogger<HomeController> _logger;
 
         public HomeController(
-            ApplicationDbContext context, 
+            ApplicationDbContext context,
             IEncryptionService encryptionService,
             IConfiguration configuration,
             IWebHostEnvironment environment,
-            IAuditLogService auditLogService)
+            IAuditLogService auditLogService,
+            IEmailService emailService,
+            ILogger<HomeController> logger)
         {
             _context = context;
             _encryptionService = encryptionService;
             _configuration = configuration;
             _environment = environment;
             _auditLogService = auditLogService;
+            _emailService = emailService;
+            _logger = logger;
         }
 
         private string? GetClientIpAddress()
@@ -201,6 +207,57 @@ namespace Application_Security_ASSGN2.Controllers
             await _auditLogService.LogAsync(member.Id, "ProfileUpdate", GetClientIpAddress(), "User updated their profile");
 
             TempData["SuccessMessage"] = "Profile updated successfully!";
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendPasswordResetLink()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (!userId.HasValue)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var member = await _context.Members.FindAsync(userId.Value);
+
+            if (member == null)
+            {
+                HttpContext.Session.Clear();
+                return RedirectToAction("Login", "Account");
+            }
+
+            // Generate reset token
+            var token = Guid.NewGuid().ToString();
+            var resetToken = new Models.PasswordResetToken
+            {
+                MemberId = member.Id,
+                Token = token,
+                ExpiresAt = DateTime.UtcNow.AddHours(1),
+                Used = false
+            };
+
+            _context.PasswordResetTokens.Add(resetToken);
+            await _context.SaveChangesAsync();
+
+            // Send reset email
+            var resetLink = Url.Action("ResetPassword", "Account", new { token }, Request.Scheme);
+            try
+            {
+                await _emailService.SendPasswordResetLinkAsync(member.Email, resetLink!);
+                TempData["SuccessMessage"] = "A password reset link has been sent to your email.";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send password reset email to {Email}", member.Email);
+                _logger.LogWarning("Password reset link for {Email}: {Link}", member.Email, resetLink);
+                TempData["ErrorMessage"] = "Failed to send reset email. Please try again later.";
+            }
+
+            await _auditLogService.LogAsync(member.Id, "PasswordResetRequested", GetClientIpAddress(), "User requested a password reset link from dashboard");
+
             return RedirectToAction("Index");
         }
 
