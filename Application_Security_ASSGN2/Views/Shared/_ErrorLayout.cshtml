@@ -3,37 +3,274 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Application Security</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>@ViewData["Title"] - SecureApp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fbfbfd;
+            background-image: radial-gradient(ellipse at 50% 0%, rgba(210, 210, 215, 0.15) 0%, transparent 70%);
+            color: #1d1d1f;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Frosted glass navigation */
+        .error-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(251, 251, 253, 0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-nav-inner {
+            width: 100%;
+            max-width: 980px;
+            padding: 0 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .error-nav-brand {
+            font-size: 1.0625rem;
+            font-weight: 600;
+            color: #1d1d1f;
+            text-decoration: none;
+            letter-spacing: -0.01em;
+        }
+
+        .error-nav-brand:hover {
+            color: #1d1d1f;
+            text-decoration: none;
+        }
+
+        .error-nav-link {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: #0071e3;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .error-nav-link:hover {
+            color: #0077ED;
+            text-decoration: underline;
+        }
+
+        /* Main content area */
+        .error-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 22px 0;
+        }
+
+        .error-content {
+            text-align: center;
+            max-width: 560px;
+            width: 100%;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        /* Icon */
+        .error-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        /* Status code */
+        .error-code {
+            font-size: 8rem;
+            font-weight: 600;
+            color: #d2d2d7;
+            line-height: 1;
+            letter-spacing: -0.04em;
+            margin-bottom: 8px;
+            user-select: none;
+        }
+
+        /* Headline */
+        .error-headline {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #1d1d1f;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        /* Subtitle */
+        .error-subtitle {
+            font-size: 1.0625rem;
+            font-weight: 400;
+            color: #86868b;
+            line-height: 1.5;
+            margin-bottom: 32px;
+            max-width: 420px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Button group */
+        .error-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Primary pill button */
+        .btn-error-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 28px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: #fff;
+            background: #1d1d1f;
+            border: none;
+            border-radius: 980px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: -0.01em;
+        }
+
+        .btn-error-primary:hover {
+            background: #000;
+            color: #fff;
+            text-decoration: none;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-error-primary:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /* Secondary ghost pill button */
+        .btn-error-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 28px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: #1d1d1f;
+            background: transparent;
+            border: 1.5px solid #d2d2d7;
+            border-radius: 980px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: -0.01em;
+        }
+
+        .btn-error-secondary:hover {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: #1d1d1f;
+            color: #1d1d1f;
+            text-decoration: none;
+        }
+
+        .btn-error-secondary:active {
+            background: rgba(0, 0, 0, 0.07);
+        }
+
+        /* Footer */
+        .error-footer {
+            padding: 20px 22px;
+            text-align: center;
+        }
+
+        .error-footer span {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: #86868b;
+        }
+
+        /* Animation */
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @@media (max-width: 576px) {
+            .error-code {
+                font-size: 5rem;
+            }
+
+            .error-headline {
+                font-size: 1.375rem;
+            }
+
+            .error-subtitle {
+                font-size: 0.9375rem;
+            }
+
+            .error-actions {
+                flex-direction: column;
+            }
+
+            .btn-error-primary,
+            .btn-error-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Simple Top Bar for Error Pages -->
-    <header class="top-bar">
-        <div class="top-bar-container">
-            <a class="top-bar-brand" href="/">
-                <span class="brand-text">SecureApp</span>
-            </a>
-            <div class="top-bar-actions">
-                <a href="/Account/Login" class="btn-signin">Sign in</a>
-            </div>
+    <nav class="error-nav">
+        <div class="error-nav-inner">
+            <a class="error-nav-brand" href="/">SecureApp</a>
+            <a class="error-nav-link" href="/Account/Login">Sign in</a>
         </div>
-    </header>
+    </nav>
 
-    <main class="main-content">
-        <div class="container">
-            @RenderBody()
-        </div>
+    <main class="error-main">
+        @RenderBody()
     </main>
 
-    <footer class="footer mt-auto py-3 bg-light">
-        <div class="container text-center">
-            <span class="text-muted">&copy; @DateTime.Now.Year - Application Security Assignment</span>
-        </div>
+    <footer class="error-footer">
+        <span>&copy; @DateTime.Now.Year SecureApp</span>
     </footer>
-
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
 </body>
 </html>

@@ -3,22 +3,12 @@
     Layout = "_ErrorLayout";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-6 text-center py-5">
-        <div class="error-template">
-            <h1 class="display-1 text-secondary">Error</h1>
-            <h2>Something Went Wrong</h2>
-            <div class="error-details my-4">
-                <p class="text-muted">An unexpected error occurred. Please try again later.</p>
-            </div>
-            <div class="error-actions">
-                <a href="/" class="btn btn-primary btn-lg">
-                    <i class="bi bi-house"></i> Go Home
-                </a>
-                <a href="javascript:history.back()" class="btn btn-outline-secondary btn-lg ms-2">
-                    <i class="bi bi-arrow-left"></i> Go Back
-                </a>
-            </div>
-        </div>
+<div class="error-content">
+    <div class="error-code" style="font-size: 4rem;">Error</div>
+    <h1 class="error-headline">Something Went Wrong</h1>
+    <p class="error-subtitle">An unexpected error occurred. Please try again later.</p>
+    <div class="error-actions">
+        <a href="/" class="btn-error-primary">Go Home</a>
+        <a href="javascript:history.back()" class="btn-error-secondary">Go Back</a>
     </div>
 </div>
