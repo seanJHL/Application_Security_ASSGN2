@@ -117,7 +117,7 @@ namespace Application_Security_ASSGN2.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateProfile(UpdateProfileViewModel model)
+        public async Task<IActionResult> UpdateProfile([Bind(Prefix = "ProfileForm")] UpdateProfileViewModel model)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
 
