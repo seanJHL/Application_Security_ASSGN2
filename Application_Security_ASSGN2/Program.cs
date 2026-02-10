@@ -146,21 +146,7 @@ using (var scope = app.Services.CreateScope())
 app.Lifetime.ApplicationStarted.Register(() =>
 {
     Console.WriteLine();
-    Console.WriteLine("╔════════════════════════════════════════════════════════════╗");
-    Console.WriteLine("║          Application Security - Server Running             ║");
-    Console.WriteLine("╠════════════════════════════════════════════════════════════╣");
-    Console.WriteLine("║  Security Features Enabled:                                ║");
-    Console.WriteLine("║  ✓ XSS Protection (Content-Security-Policy)                ║");
-    Console.WriteLine("║  ✓ Clickjacking Protection (X-Frame-Options)               ║");
-    Console.WriteLine("║  ✓ MIME Sniffing Protection (X-Content-Type-Options)       ║");
-    Console.WriteLine("║  ✓ CSRF Protection (Anti-Forgery Tokens)                   ║");
-    Console.WriteLine("║  ✓ Session Security (HttpOnly, SameSite, Secure)           ║");
-    Console.WriteLine("║  ✓ Global Exception Handling (No Stack Trace Exposure)     ║");
-    Console.WriteLine("║  ✓ Custom Error Pages (401, 403, 404, 500)                 ║");
-    Console.WriteLine("║  ✓ Password Hashing (Argon2id)                             ║");
-    Console.WriteLine("║  ✓ Data Encryption (AES-256 for NRIC)                      ║");
-    Console.WriteLine("║  ✓ Two-Factor Authentication (Email OTP)                   ║");
-    Console.WriteLine("╚════════════════════════════════════════════════════════════╝");
+
     Console.WriteLine();
     Console.WriteLine("🌐 Application is now running at:");
     
